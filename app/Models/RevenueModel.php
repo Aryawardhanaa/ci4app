@@ -128,11 +128,17 @@ class RevenueModel extends Model
                 break;
         }
         $sql = "SELECT regional,
-                       COUNT(CASE WHEN average_availability < 89.9 THEN 1 END) AS total_P1, 
-                       COUNT(CASE WHEN average_availability BETWEEN 98 AND 100 THEN 1 END) AS sales_P1, 
-                       COUNT(CASE WHEN average_availability < 89.9 THEN 1 END) AS non_program_sales, 
-                       COUNT(CASE WHEN average_availability BETWEEN 90 AND 97.99 THEN 1 END) AS total_P2, 
-                       COUNT(CASE WHEN average_availability >= 98 THEN 1 END) AS total_Non_Program 
+                    --    COUNT(CASE WHEN average_availability < 89.9 THEN 1 END) AS total_P1, 
+                    --    COUNT(CASE WHEN average_availability BETWEEN 98 AND 100 THEN 1 END) AS sales_P1, 
+                    --    COUNT(CASE WHEN average_availability < 89.9 THEN 1 END) AS non_program_sales, 
+                    --    COUNT(CASE WHEN average_availability BETWEEN 90 AND 97.99 THEN 1 END) AS total_P2, 
+                    --    COUNT(CASE WHEN average_availability >= 98 THEN 1 END) AS total_Non_Program  
+                       COUNT(CASE WHEN average_availability < 0.899 THEN 1 END) AS total_P1, 
+                       COUNT(CASE WHEN average_availability BETWEEN 0.98 AND 1 THEN 1 END) AS sales_P1, 
+                       COUNT(CASE WHEN average_availability < 0.899 THEN 1 END) AS non_program_sales, 
+                       COUNT(CASE WHEN average_availability BETWEEN 0.90 AND 0.9799 THEN 1 END) AS total_P2, 
+                       COUNT(CASE WHEN average_availability >= 0.98 THEN 1 END) AS total_Non_Program  
+
                     -- COUNT(IF( average_availability < 90, 1, NULL)) AS total_P1, 
                     -- COUNT(IF( average_availability BETWEEN 98 AND 100, 1, NULL)) AS sales_P1, 
                     -- COUNT(IF( average_availability < 90 AND average_availability > 98, 1, NULL)) AS non_program_sales, 
@@ -144,19 +150,19 @@ class RevenueModel extends Model
                         ELSE (revenue_m1 + revenue_m2 + revenue_m3 + revenue_m4 + revenue_m5 + revenue_m6) / NULLIF(
                             ((revenue_m1 <> 0) + (revenue_m2 <> 0) + (revenue_m3 <> 0) + (revenue_m4 <> 0) + (revenue_m5 <> 0) + (revenue_m6 <> 0)), 
                             0) END AS avg_revenue,
-                            --  CASE 
-                            --     WHEN 
-                            --         ( (availability_m1 <> 0) + (availability_m2 <> 0) + (availability_m3 <> 0) + 
-                            --         (availability_m4 <> 0) + (availability_m5 <> 0) + (availability_m6 <> 0) ) = 0 
-                            --     THEN 0
-                            --     ELSE 
-                            --         (availability_m1 + availability_m2 + availability_m3 + availability_m4 + availability_m5 + availability_m6) / 
-                            --         NULLIF( 
-                            --             ( (availability_m1 <> 0) + (availability_m2 <> 0) + (availability_m3 <> 0) + 
-                            --             (availability_m4 <> 0) + (availability_m5 <> 0) + (availability_m6 <> 0) ), 0)
-                            -- END AS average_availability
-                             CAST((availability_m1 + availability_m2 + availability_m3 + availability_m4 + availability_m5 + availability_m6) / 6 AS FLOAT)
-                            AS average_availability  
+                              CASE 
+                                 WHEN 
+                                     ( (availability_m1 <> 0) + (availability_m2 <> 0) + (availability_m3 <> 0) + 
+                                     (availability_m4 <> 0) + (availability_m5 <> 0) + (availability_m6 <> 0) ) = 0 
+                                 THEN 0
+                                 ELSE 
+                                     (availability_m1 + availability_m2 + availability_m3 + availability_m4 + availability_m5 + availability_m6) / 
+                                     NULLIF( 
+                                         ( (availability_m1 <> 0) + (availability_m2 <> 0) + (availability_m3 <> 0) + 
+                                         (availability_m4 <> 0) + (availability_m5 <> 0) + (availability_m6 <> 0) ), 0)
+                             END AS average_availability
+                           --  CAST((availability_m1 + availability_m2 + availability_m3 + availability_m4 + availability_m5 + availability_m6) / 6 AS FLOAT)
+                           -- AS average_availability  
                         FROM revenue) AS availability_avg 
                 -- WHERE avg_revenue $cond
                 $cond

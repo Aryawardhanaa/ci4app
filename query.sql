@@ -292,3 +292,53 @@ SELECT  regional,
                 --             WHEN avg_revenue < 400000000 THEN 'Pla'
                 --             ELSE 'Dia'
                 
+
+
+				SELECT regional,
+                       COUNT(CASE WHEN average_availability < 89.9 THEN 1 END) AS total_P1, 
+                       COUNT(CASE WHEN average_availability BETWEEN 98 AND 100 THEN 1 END) AS sales_P1, 
+                       COUNT(CASE WHEN average_availability < 89.9 THEN 1 END) AS non_program_sales, 
+                       COUNT(CASE WHEN average_availability BETWEEN 90 AND 97.99 THEN 1 END) AS total_P2, 
+                       COUNT(CASE WHEN average_availability >= 98 THEN 1 END) AS total_Non_Program ,
+                       (SELECT site_id FROM revenue WHERE average_availability < 89.9) AS data_P1,
+                       (SELECT site_id FROM revenue WHERE average_availability  98 AND 100) AS data_sales_P1,
+                       (SELECT site_id FROM revenue WHERE average_availability < 89.9) AS data_non_program_sales,
+                       (SELECT site_id FROM revenue WHERE average_availability BETWEEN 90 AND 97.99) AS data_non_program_sales,
+                       (SELECT site_id FROM revenue WHERE average_availability >= 98) AS data_non_program_sales,
+  
+                             CAST((availability_m1 + availability_m2 + availability_m3 + availability_m4 + availability_m5 + availability_m6) / 6 					AS FLOAT)
+                            AS average_availability  
+                        FROM revenue AS availability_avg 
+               	WHERE avg_revenue BETWEEN 59999999 AND 99999999
+                GROUP BY regional
+                order by regional DESC;
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM revenue WHERE site_id 
+IN (SELECT site_id FROM (
+        SELECT site_id, 
+            CASE 
+                WHEN ((revenue_m1 <> 0) + (revenue_m2 <> 0) + (revenue_m3 <> 0) + 
+                      (revenue_m4 <> 0) + (revenue_m5 <> 0) + (revenue_m6 <> 0)) = 0 
+                THEN 0 
+                ELSE (revenue_m1 + revenue_m2 + revenue_m3 + revenue_m4 + revenue_m5 + revenue_m6) / 
+                     NULLIF(((revenue_m1 <> 0) + (revenue_m2 <> 0) + (revenue_m3 <> 0) + 
+                             (revenue_m4 <> 0) + (revenue_m5 <> 0) + (revenue_m6 <> 0)), 0) 
+            END AS avg_revenue,
+    	   CAST((availability_m1 + availability_m2 + availability_m3 + availability_m4 + availability_m5 + availability_m6) / 6 AS FLOAT)
+ 			AS average_availability 
+        FROM revenue
+    ) AS revenue_avg
+    WHERE avg_revenue BETWEEN 99999999 AND 199999999
+    AND average_availability >= 98
+);
+
+
+
+
+
+
+
+
+               

@@ -210,8 +210,8 @@
                 <?php endif; ?>
                 <div class=" ">
 
-                    <!-- <form action="/revenue-import-excel" method="POST" enctype="multipart/form-data"> -->
-                    <form action="/email" method="POST" enctype="multipart/form-data">
+                    <form action="/revenue-import-excel" method="POST" enctype="multipart/form-data">
+                        <!-- <form action="/send-email" method="POST" enctype="multipart/form-data"> -->
                         <div class="form-group row mb-2">
                             <div class="col-sm-2">
                                 <label for="Upload File Dokumen " class="col-form-label"> Upload File Dokumen </label>
@@ -220,6 +220,7 @@
 
                                 <div class="custom-file">
                                     <input type="file" name="excel_file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                                    <!-- <input type="file" name="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"> -->
                                     <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                                 </div>
                             </div>
@@ -239,14 +240,27 @@
             </div>
         </div>
         <div class="tab-pane fade d-none" id="custom-tabs-one-user" role="tabpanel" aria-labelledby="custom-tabs-one-user-tab">
+            <div class="container my-3 mt-5">
+                <?php if (session()->getFlashdata('u_message')): ?>
+                    <div class="alert alert-success"><?= session()->getFlashdata('u_message') ?></div>
+                <?php endif; ?>
+                <?php if (session()->getFlashdata('u_failed')): ?>
+                    <div class="alert alert-danger"><?= session()->getFlashdata('u_failed') ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="container my-3 mt-5">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Tambah Data
+                </button>
+            </div>
             <div class="container mt-5">
-
                 <table id="documentTable" class="table table-striped w-full">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Nama Employee</th>
-                            <th>User Level</th>
+                            <th>Email</th>
+                            <th>Role</th>
                         </tr>
                     </thead>
                 </table>
@@ -256,7 +270,39 @@
 
 
     </div>
-
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Data Pegawai</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="<?= base_url('/revenue/user-store') ?>" method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="Nama-name" class="col-form-label">Nama :</label>
+                            <input type="text" class="form-control required" name="nama" id="Nama-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="Email-name" class="col-form-label">Email :</label>
+                            <input type="email" name="email" type="text" required class="form-control" id="Email-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="Role-name" class="col-form-label">Role :</label>
+                            <select class="form-control" id="role" required name="role">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <!-- Tabs content -->
 
     <!-- SCRIPTS -->
@@ -316,7 +362,7 @@
                 serverSide: true,
                 pageLength: 5,
                 ajax: {
-                    url: "<?= base_url('excel/getData') ?>",
+                    url: "<?= base_url('revenue/get-user') ?>",
                     type: "POST",
                 },
                 width: "100%",
@@ -325,10 +371,13 @@
                         data: 'no',
                     },
                     {
-                        data: 'kode_dokumen'
+                        data: 'nama'
                     },
                     {
-                        data: 'idt'
+                        data: 'email'
+                    },
+                    {
+                        data: 'r'
                     }
                 ],
 
@@ -347,6 +396,25 @@
             $(document).on("change", "#catrequest", function() {
 
                 $(`#myform`).submit();
+            });
+
+            $.ajax({
+                url: '<?= base_url("get-roles") ?>', // Sesuaikan dengan route controller
+                type: 'POST',
+                data: {
+                    request: 'fetch'
+                }, // Kirim data POST jika diperlukan
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+
+                    let select = $('#role');
+                    select.empty(); // Hapus opsi lama
+                    select.append('<option value="">Pilih Role</option>'); // Opsi default
+                    $.each(data, function(key, value) {
+                        select.append('<option value="' + value.id + '">' + value.nama_role + '</option>');
+                    });
+                }
             });
         });
     </script>

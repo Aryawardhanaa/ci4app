@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\PegawaiModel;
 use App\Models\RevenueModel;
+use App\Models\RoleModel;
 
 class RevenueController extends BaseController
 {
@@ -11,9 +12,6 @@ class RevenueController extends BaseController
     {
         $model = new RevenueModel();
 
-        // echo '<pre>';
-        // var_dump(count($model->findAll()));
-        // exit;
         $filterdata = $model->getFilterData();
         $filterdata[] = (object) ['category' => 'All'];
         $category = $filterdata[0]->category;
@@ -21,7 +19,7 @@ class RevenueController extends BaseController
         $datas = $model->getAccountData($params);
         $alldata = $model->getAllData();
 
-        return view('revenue/index', compact('filterdata', 'datas', 'params', 'alldata'));
+        return view('revenue/index', compact('filterdata', 'datas', 'params', 'alldata', 'model'));
     }
     public function import()
     {
@@ -29,10 +27,6 @@ class RevenueController extends BaseController
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
         $file = $this->request->getFile('excel_file');
-        // $files = $this->request->getFiles();
-        // echo '<pre>';
-        // var_dump($file);
-        // exit;
 
         if ($file->getSize() == 0) {
             return redirect()->back()->with('failed', 'The file cannot be null !');
@@ -71,12 +65,12 @@ class RevenueController extends BaseController
                 $datatoinsert[$key]['revenue_m4'] = (float) str_replace([',', " "], '', $row[7]);
                 $datatoinsert[$key]['revenue_m5'] = (float) str_replace([',', " "], '', $row[8]);
                 $datatoinsert[$key]['revenue_m6'] = (float) str_replace([',', " "], '', $row[9]);
-                $datatoinsert[$key]['availability_m1'] = (int) str_replace('%', '', $row[10]);
-                $datatoinsert[$key]['availability_m2'] = (int) str_replace('%', '', $row[11]);
-                $datatoinsert[$key]['availability_m3'] = (int) str_replace('%', '', $row[12]);
-                $datatoinsert[$key]['availability_m4'] = (int) str_replace('%', '', $row[13]);
-                $datatoinsert[$key]['availability_m5'] = (int) str_replace('%', '', $row[14]);
-                $datatoinsert[$key]['availability_m6'] = (int) str_replace('%', '', $row[15]);
+                $datatoinsert[$key]['availability_m1'] = ((int) str_replace('%', '', $row[10])) / 100;
+                $datatoinsert[$key]['availability_m2'] = ((int) str_replace('%', '', $row[11])) / 100;
+                $datatoinsert[$key]['availability_m3'] = ((int) str_replace('%', '', $row[12])) / 100;
+                $datatoinsert[$key]['availability_m4'] = ((int) str_replace('%', '', $row[13])) / 100;
+                $datatoinsert[$key]['availability_m5'] = ((int) str_replace('%', '', $row[14])) / 100;
+                $datatoinsert[$key]['availability_m6'] = ((int) str_replace('%', '', $row[15])) / 100;
             }
             if (isset($exist)) {
                 $result[$key]['site_id'] = $row[1];
@@ -88,12 +82,12 @@ class RevenueController extends BaseController
                 $result[$key]['revenue_m4'] = (float) str_replace([',', " "], '', $row[7]);
                 $result[$key]['revenue_m5'] = (float) str_replace([',', " "], '', $row[8]);
                 $result[$key]['revenue_m6'] = (float) str_replace([',', " "], '', $row[9]);
-                $result[$key]['availability_m1'] = (int) str_replace('%', '', $row[10]);
-                $result[$key]['availability_m2'] = (int) str_replace('%', '', $row[11]);
-                $result[$key]['availability_m3'] = (int) str_replace('%', '', $row[12]);
-                $result[$key]['availability_m4'] = (int) str_replace('%', '', $row[13]);
-                $result[$key]['availability_m5'] = (int) str_replace('%', '', $row[14]);
-                $result[$key]['availability_m6'] = (int) str_replace('%', '', $row[15]);
+                $result[$key]['availability_m1'] = ((int) str_replace('%', '', $row[10])) / 100;
+                $result[$key]['availability_m2'] = ((int) str_replace('%', '', $row[11])) / 100;
+                $result[$key]['availability_m3'] = ((int) str_replace('%', '', $row[12])) / 100;
+                $result[$key]['availability_m4'] = ((int) str_replace('%', '', $row[13])) / 100;
+                $result[$key]['availability_m5'] = ((int) str_replace('%', '', $row[14])) / 100;
+                $result[$key]['availability_m6'] = ((int) str_replace('%', '', $row[15])) / 100;
             }
         }
 
@@ -114,8 +108,114 @@ class RevenueController extends BaseController
 
         return redirect()->to('/revenue')->with('message', 'Data added successfully!');
     }
+    public function getRoles()
+    {
+        if ($this->request->getMethod() === 'POST') {
+            $model = new RoleModel();
+            $roles = $model->findAll();
+            return $this->response->setJSON($roles);
+        }
+        return $this->response->setJSON(['error' => 'Invalid request'], 400);
+    }
 
-    public function loadUser()
+
+    public function storeUser()
+    {
+        $validation = \Config\Services::validation();
+
+        $rules = [
+            'nama' => 'required',
+            'email' => 'required|valid_email',
+            'role' => 'required',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to('/revenue')->with('u_failed', $validation->getErrors());
+        }
+
+        $model = new PegawaiModel();
+        $model->save([
+            'nama'  => $this->request->getPost('nama'),
+            'email' => $this->request->getPost('email'),
+            'role_id' => $this->request->getPost('role'),
+            'is_deleted' => 0,
+            'idt' => date('Y-m-d H:i:s'),
+            'udt' => date('Y-m-d H:i:s')
+        ]);
+
+        return redirect()->to('/revenue')->with('u_message', 'Data added successfully!');
+    }
+
+    public function sendEmail()
+    {
+
+        $model = new PegawaiModel();
+        $datas = $model->select('pegawai.email,role.nama_role')
+            ->join('role', 'role.id = pegawai.role_id')
+            // ->where('role.nama_role', RoleModel::ROLE_MANAGER)
+            ->where('pegawai.is_deleted', 0)
+            ->findAll();
+
+
+        // $filtermanager = array_filter($datas, function ($v) {
+        //     return $v['nama_role'] === RoleModel::ROLE_MANAGER;
+        // });
+        // $emailList = array_column($filtermanager, 'email');
+        $emailListManager = array_column(array_filter($datas, fn($v) => $v['nama_role'] === RoleModel::ROLE_MANAGER), 'email');
+        $emailListSuperisor = array_column(array_filter($datas, fn($v) => $v['nama_role'] === RoleModel::ROLE_SUPERVISOR), 'email');
+        $emailListStaff = array_column(array_filter($datas, fn($v) => $v['nama_role'] === RoleModel::ROLE_STAFF), 'email');
+
+        $file = $this->request->getFile('file');
+        if (!$file->isValid()) {
+            return redirect()->to('/revenue')->with('failed', 'Data File Tidak Valid!');
+        }
+        $email = \Config\Services::email();
+        $email->setFrom('muhammad.arya7831@gmail.com', 'Muh Arya'); // Pengirim
+        $email->setTo($emailListStaff);
+        $email->setCc($emailListManager);
+        $email->setBCC($emailListSuperisor);
+        $email->setSubject('Test Email from CodeIgniter 4');
+        $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
+        $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
+        $email->send();
+        if ($email->send()) {
+            return redirect()->to('/revenue')->with('message', 'Email successfully sent!');
+        } else {
+            // return redirect()->to('/revenue')->with('failed', 'Failed sent!');
+            return redirect()->to('/revenue')->with('failed', 'Email successfully sent!');
+            // echo '<pre>';
+            // var_dump($email->printDebugger(['headers']));
+            // exit;
+            // return $email->printDebugger(['headers']); // Debugging jika gagal
+        }
+        // foreach ($datas as $value) {
+        //     if ($value['nama_role'] == RoleModel::ROLE_STAFF) {
+        //         $email->setTo($value['email']); // Penerima
+        // $email->setSubject('Test Email from CodeIgniter 4');
+        // $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
+        // $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
+        //     }
+        //     if ($value['nama_role'] == RoleModel::ROLE_SUPERVISOR) {
+        //         $email->setTo($value['email']); // Penerima
+        //         $email->setSubject('Test Email from CodeIgniter 4');
+        //         $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
+        //         $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
+        //     }
+        // }
+        // $email->setBCC('bcc1@example.com, bcc2@example.com'); // BCC (bisa lebih dari satu)
+
+        // echo '<pre>';
+        // var_dump($arr);
+        // exit;
+        // $email->setTo('farhansyahputra9901@gmail.com'); // Penerima
+        // $email->setSubject('Test Email from CodeIgniter 4');
+        // $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
+        // $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
+
+
+
+    }
+    public function getUser()
     {
         $request = service('request');
 
@@ -124,26 +224,27 @@ class RevenueController extends BaseController
         $searchValue = $request->getPost('search') ?? '';
         $reqpost = $this->request->getPost();
 
-        $documentModel = new PegawaiModel();
-        // $documents = $documentModel;
+        $model = new PegawaiModel();
+        // $documents = $model;
         // if (!empty($searchValue)) {
-        //     $documents = $documentModel->like('doc_name', $searchValue || '');
+        //     $documents = $model->like('doc_name', $searchValue || '');
         // }
-        // $documents = $documentModel->find();
+        // $documents = $model->find();
 
-        $documents = $documentModel->where('is_deleted', 0)
+        $documents = $model->where('is_deleted', 0)
             ->limit((int)$length, (int)$start)
             ->find();
 
         $start1 = intval($reqpost['start']);
         $data = [];
         foreach ($documents as $key => $doc) {
-            // $doc->no = $start1 +$key+1;
+            // $doc->no = $start1 + $key + 1;
             $data[] = [
-                'id' => $doc['id'],  // id
-                'no' => $start1 + $key + 1, // Nomor Urut
-                'kode_dokumen' => esc($doc['kode_dokumen']),
-                'idt' => esc($doc['idt'])
+                // 'id' => $doc['id'],
+                'no' => $start1 + $key + 1,
+                'nama' => $doc['nama'],
+                'email' => $doc['email'],
+                'r' => $model->role($doc['role_id'])['nama_role']
             ];
         }
 
@@ -152,8 +253,8 @@ class RevenueController extends BaseController
             'data' => $data,
             'start' => $start,
             'draw' => $this->request->getPost('draw'),
-            'recordsTotal' => $documentModel->countAllData(),
-            'recordsFiltered' => $documentModel->countFiltered($reqpost),
+            'recordsTotal' => $model->countAllData(),
+            'recordsFiltered' => $model->countFiltered($reqpost),
         ]);
     }
 }

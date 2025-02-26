@@ -22,7 +22,7 @@ class CreatePegawaiTable extends Migration
             'email' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '100',
-                'unique'     => true,
+                'null'     => true,
             ],
             'jabatan' => [
                 'type'       => 'VARCHAR',

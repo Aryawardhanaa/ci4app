@@ -9,15 +9,26 @@ class PegawaiModel extends Model
 {
     protected $table      = 'pegawai';
     protected $primaryKey = 'id';
-    protected $allowedFields = [
-        'nama_role',
-        'role_id',
-        'is_deleted',
-        'idt',
-        'udt'
-    ];
+    protected $allowedFields = ['nama', 'email', 'role_id', 'is_deleted', 'idt', 'udt'];
 
+    public function getUser()
+    {
+        return $this->belongsTo('App\Models\UserModel', 'user_id', 'id');
+    }
+    // public function belongsTo($relatedModel, $foreignKey, $ownerKey = 'id')
+    // {
+    //     $model = new $relatedModel();
+    //     return $model->where($ownerKey, $this->$foreignKey)->first();
+    // }
 
+    // public function role()
+    // {
+    //     return $this->belongsTo(RoleModel::class, 'role_id');
+    // }
+    public function role($id)
+    {
+        return (new RoleModel())->find($id);
+    }
     public function getDataTables($request)
     {
         $builder = $this->db->table($this->table);
@@ -51,7 +62,10 @@ class PegawaiModel extends Model
 
         return $builder->get()->getResult();
     }
-
+    // public function getRole()
+    // {
+    //     return $this->belongsTo('App\Models\RoleModel', 'role_id', 'id');
+    // }
     public function countFiltered($request)
     {
         $builder = $this->db->table($this->table);
@@ -76,9 +90,7 @@ class PegawaiModel extends Model
     protected function minusDate($data, $type)
     {
         $date = new DateTime($data);
-
         $date->modify("-1 $type");
-
         // $converted = $this->converTanggal($date->format('Y-m-d')); 
         return $date->format('Y-m-d');
     }
