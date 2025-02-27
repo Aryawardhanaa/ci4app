@@ -332,6 +332,7 @@ IN (SELECT site_id FROM (
     ) AS revenue_avg
     WHERE avg_revenue BETWEEN 99999999 AND 199999999
     AND average_availability >= 98
+    AND regional ='Sumbagut'
 );
 
 

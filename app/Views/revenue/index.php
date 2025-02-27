@@ -175,23 +175,23 @@
                             $non_program_sales += $value->non_program_sales; ?>
                             <tr>
                                 <td><?= $value->regional ?></td>
-                                <td><?= $value->total_P1 ?></td>
-                                <td><?= $value->total_P2 ?></td>
-                                <td><?= $value->total_Non_Program ?></td>
-                                <td><?= $value->sales_P1 ?></td>
-                                <td><?= $value->total_P2 ?></td>
-                                <td><?= $value->non_program_sales ?></td>
+                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P1") ?>"><?= $value->total_P1 ?></a></td>
+                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P2") ?>"><?= $value->total_P2 ?></a></td>
+                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_Non_Program") ?>"><?= $value->total_Non_Program ?></a></td>
+                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=sales_P1") ?>"><?= $value->sales_P1 ?></a></td>
+                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P2") ?>"><?= $value->total_P2 ?></a></td>
+                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=non_program_sales") ?>"><?= $value->non_program_sales ?></a></td>
 
                             </tr>
                         <?php endforeach; ?>
                         <tr>
                             <td>Total</td>
-                            <td><?= $total_P1; ?></td>
-                            <td><?= $total_P2; ?></td>
-                            <td><?= $total_Non_Program; ?></td>
-                            <td><?= $sales_P1; ?></td>
-                            <td><?= $total_P2; ?></td>
-                            <td><?= $non_program_sales; ?></td>
+                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_P1") ?>"> <?= $total_P1; ?></a></td>
+                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_P2") ?>"><?= $total_P2; ?></a></td>
+                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_Non_Program") ?>"><?= $total_Non_Program; ?></a></td>
+                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=sales_P1") ?>"><?= $sales_P1; ?></a></td>
+                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_P2") ?>"><?= $total_P2; ?></a></td>
+                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=non_program_sales") ?>"><?= $non_program_sales; ?></a></td>
                         </tr>
                     </tbody>
 
@@ -249,9 +249,9 @@
                 <?php endif; ?>
             </div>
             <div class="container my-3 mt-5">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                     Tambah Data
-                </button>
+                </button> -->
             </div>
             <div class="container mt-5">
                 <table id="documentTable" class="table table-striped w-full">
@@ -357,16 +357,24 @@
         $(document).ready(function() {
             $("#documentTable").css("width", "100%")
 
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramValue = urlParams.get('regional'); // Get specific parameter
+
+            console.log(paramValue);
+
             let table = $('#documentTable').DataTable({
                 processing: true,
                 serverSide: true,
-                pageLength: 5,
+                pageLength: 10,
                 ajax: {
                     url: "<?= base_url('revenue/get-user') ?>",
                     type: "POST",
+
                 },
                 width: "100%",
                 ordering: false,
+                searching: false,
+                lengthChange: false,
                 columns: [{
                         data: 'no',
                     },

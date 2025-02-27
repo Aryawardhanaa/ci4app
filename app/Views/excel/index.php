@@ -301,6 +301,8 @@
                 },
                 width: "100%",
                 ordering: false,
+                searching: false,
+                lengthChange: false,
                 columns: [{
                         data: 'no',
                     },

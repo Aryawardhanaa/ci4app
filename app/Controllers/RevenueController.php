@@ -186,34 +186,7 @@ class RevenueController extends BaseController
             // echo '<pre>';
             // var_dump($email->printDebugger(['headers']));
             // exit;
-            // return $email->printDebugger(['headers']); // Debugging jika gagal
         }
-        // foreach ($datas as $value) {
-        //     if ($value['nama_role'] == RoleModel::ROLE_STAFF) {
-        //         $email->setTo($value['email']); // Penerima
-        // $email->setSubject('Test Email from CodeIgniter 4');
-        // $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
-        // $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
-        //     }
-        //     if ($value['nama_role'] == RoleModel::ROLE_SUPERVISOR) {
-        //         $email->setTo($value['email']); // Penerima
-        //         $email->setSubject('Test Email from CodeIgniter 4');
-        //         $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
-        //         $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
-        //     }
-        // }
-        // $email->setBCC('bcc1@example.com, bcc2@example.com'); // BCC (bisa lebih dari satu)
-
-        // echo '<pre>';
-        // var_dump($arr);
-        // exit;
-        // $email->setTo('farhansyahputra9901@gmail.com'); // Penerima
-        // $email->setSubject('Test Email from CodeIgniter 4');
-        // $email->setMessage('<h3>Halo , this is a test email from CI4!</h3>');
-        // $email->attach($file->getTempName(), 'application/octet-stream', $file->getName());
-
-
-
     }
     public function getUser()
     {
@@ -238,9 +211,7 @@ class RevenueController extends BaseController
         $start1 = intval($reqpost['start']);
         $data = [];
         foreach ($documents as $key => $doc) {
-            // $doc->no = $start1 + $key + 1;
             $data[] = [
-                // 'id' => $doc['id'],
                 'no' => $start1 + $key + 1,
                 'nama' => $doc['nama'],
                 'email' => $doc['email'],
@@ -256,5 +227,143 @@ class RevenueController extends BaseController
             'recordsTotal' => $model->countAllData(),
             'recordsFiltered' => $model->countFiltered($reqpost),
         ]);
+    }
+
+    public function detailSite()
+    {
+        // $param = $this->request->getGet();
+
+        // $model = new RevenueModel();
+        // $sites = $model->getDetailSite($param);
+
+        // // $start1 = intval($reqpost['start']);
+        // $data = [];
+        // foreach ($sites as $key => $doc) {
+        //     $data[] = [
+        //         // 'no' => $start1 + $key + 1,
+        //         'site_id' => $doc->site_id,
+        //         'revenue_m1' => $doc->revenue_m1,
+        //         'revenue_m2' => $doc->revenue_m2,
+        //         'revenue_m3' => $doc->revenue_m3,
+        //         'revenue_m4' => $doc->revenue_m4,
+        //         'revenue_m5' => $doc->revenue_m5,
+        //         'revenue_m6' => $doc->revenue_m6,
+        //         'availability_m1' => $doc->availability_m1,
+        //         'availability_m2' => $doc->availability_m2,
+        //         'availability_m3' => $doc->availability_m3,
+        //         'availability_m4' => $doc->availability_m4,
+        //         'availability_m5' => $doc->availability_m5,
+        //         'availability_m6' => $doc->availability_m6,
+        //     ];
+        // }
+        // echo '<pre>';
+        // var_dump($data);
+        // exit;
+        return view('revenue/detail_site');
+    }
+    // public function getDataSite()
+    // {
+    //     // $param = $this->request->getGet();
+
+
+    //     $request = service('request');
+
+    //     $start = $request->getPost('start');
+    //     $length = $request->getPost('length');
+    //     $searchValue = $request->getPost('search') ?? '';
+    //     $reqpost = $this->request->getPost();
+    //     $regional = $this->request->getPost('regional');
+    //     $avail = $this->request->getPost('avail');
+    //     $revenue_cat = $this->request->getPost('revenue_cat');
+
+    //     $model = new RevenueModel();
+    //     $sites = $model->getDetailSite($regional, $avail, $revenue_cat, $length, $start);
+    //     // $documents = $model;
+    //     // if (!empty($searchValue)) {
+    //     //     $documents = $model->like('doc_name', $searchValue || '');
+    //     // }
+    //     // $documents = $model->find();
+
+
+    //     $start1 = intval($reqpost['start']);
+    //     $data = [];
+    //     foreach ($sites as $key => $doc) {
+    //         $data[] = [
+    //             'no' => $start1 + $key + 1,
+    //             'site_id' => $doc->site_id
+    //             // 'revenue_m1' => $doc->revenue_m1,
+    //             // 'revenue_m2' => $doc->revenue_m2,
+    //             // 'revenue_m3' => $doc->revenue_m3,
+    //             // 'revenue_m4' => $doc->revenue_m4,
+    //             // 'revenue_m5' => $doc->revenue_m5,
+    //             // 'revenue_m6' => $doc->revenue_m6,
+    //             // 'availability_m1' => $doc->availability_m1,
+    //             // 'availability_m2' => $doc->availability_m2,
+    //             // 'availability_m3' => $doc->availability_m3,
+    //             // 'availability_m4' => $doc->availability_m4,
+    //             // 'availability_m5' => $doc->availability_m5,
+    //             // 'availability_m6' => $doc->availability_m6,
+    //         ];
+    //     }
+
+    //     return $this->response->setJSON([
+    //         'data' => $data,
+    //         'start' => $start,
+    //         'draw' => $this->request->getPost('draw'),
+    //         'recordsTotal' => $model->countAllData($length, $start),
+    //         'recordsFiltered' => $model->countFiltered($reqpost, $length, $start),
+    //     ]);
+    // }
+    public function getDataSite()
+    {
+        $request = service('request');
+
+        $draw   = $request->getPost('draw');
+        $start  = (int) $request->getPost('start');
+        $length = (int) $request->getPost('length');
+        $regional = $request->getPost('regional');
+        $avail = $request->getPost('avail');
+        $revenue_cat = $request->getPost('revenue_cat');
+
+        $model = new RevenueModel();
+
+        // Total semua data (tanpa filter)
+        $totalRecords = $model->countAllData(); // Sesuaikan dengan cara menghitung total data
+
+        // Total data setelah filter (tanpa limit)
+        $totalFiltered = $model->countFilteredData($regional, $avail, $revenue_cat);
+
+        // Ambil data dengan filter dan limit
+        $data = $model->getDetailSite($regional, $avail, $revenue_cat, $length, $start);
+
+        // Format response untuk DataTables
+        $result = [
+            "draw"            => intval($draw),
+            "recordsTotal"    => $totalFiltered,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => []
+        ];
+
+        $no = $start + 1;
+        foreach ($data as $row) {
+            $result['data'][] = [
+                'no'      => $no++,
+                'site_id' => $row->site_id,
+                'revenue_m1' => $row->revenue_m1,
+                'revenue_m2' => $row->revenue_m2,
+                'revenue_m3' => $row->revenue_m3,
+                'revenue_m4' => $row->revenue_m4,
+                'revenue_m5' => $row->revenue_m5,
+                'revenue_m6' => $row->revenue_m6,
+                'availability_m1' => $row->availability_m1,
+                'availability_m2' => $row->availability_m2,
+                'availability_m3' => $row->availability_m3,
+                'availability_m4' => $row->availability_m4,
+                'availability_m5' => $row->availability_m5,
+                'availability_m6' => $row->availability_m6,
+            ];
+        }
+
+        return $this->response->setJSON($result);
     }
 }

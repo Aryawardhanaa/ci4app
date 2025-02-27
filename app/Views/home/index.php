@@ -282,6 +282,8 @@
                 width: "100%",
                 // paging: false,
                 ordering: false,
+                searching: false,
+                lengthChange: false,
                 // searching: false,
                 // info: false,
                 // pagingType: "full_numbers",
