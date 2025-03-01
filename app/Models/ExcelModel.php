@@ -100,21 +100,30 @@ class ExcelModel extends Model
             "SUM(CASE WHEN month_year = '$param' THEN total ELSE 0 END) AS '$aliasparam'",
             "SUM(CASE WHEN month_year = '$startYoy' THEN total ELSE 0 END) AS '$aliasYoy'",
         ])->join('category_account_2', "category_account_2.code_account = excel.kode_akun_2 AND LEFT(excel.kode_akun_2, 2)", 'left', false)
+
             // ->join('category_account_2', 'category_account_2.code_account = excel.kode_akun_2', 'left')
             // ->whereIn('LEFT(kode_akun_2, 2)', ['52', '53', '54', '55', '56'])
             ->groupBy('LEFT(kode_akun_2, 2)');
-        // $builder->select([
-        //     "LEFT(kode_akun_2, 2) AS kode_akun_2",
-        //     "SUM(CASE WHEN month_year = '2024-01-01' THEN total ELSE 0 END) AS 'Jan-24'",
-        //     "SUM(CASE WHEN month_year = '2024-02-01' THEN total ELSE 0 END) AS 'Feb-24'",
-        //     "SUM(CASE WHEN month_year = '2023-02-01' THEN total ELSE 0 END) AS 'Feb-23'",
-        // ])->join('category_account_2', "category_account_2.code_account = excel.kode_akun_2 AND LEFT(excel.kode_akun_2, 2)", 'left', false)
-
-        //     // ->join('category_account_2', 'category_account_2.code_account = excel.kode_akun_2', 'left')
-        //     // ->whereIn('LEFT(kode_akun_2, 2)', ['52', '53', '54', '55', '56'])
-        //     ->groupBy('LEFT(kode_akun_2, 2)');
 
         // Menjalankan query dan mengembalikan hasilnya
+        return $builder->get()->getResultArray();
+    }
+    public function getAcountRegion()
+    {
+        $builder = $this->builder();
+
+        $builder->select([
+            "LEFT(excel.kode_akun_2, 2) AS kode_akun_2",
+            "SUM(CASE WHEN excel.kategori_dokumen = '20' THEN excel.total ELSE 0 END) AS Sumatera",
+            "SUM(CASE WHEN excel.kategori_dokumen = '21' THEN excel.total ELSE 0 END) AS Sumbagut",
+            "SUM(CASE WHEN excel.kategori_dokumen = '22' THEN excel.total ELSE 0 END) AS Sumbagsel",
+            "SUM(CASE WHEN excel.kategori_dokumen = '23' THEN excel.total ELSE 0 END) AS Sumbagteng",
+            "ca.desc"
+        ])
+            ->join('category_account_2 ca', "ca.code_account = LEFT(excel.kode_akun_2, 2)", 'left', false)
+            ->where('excel.is_deleted', 0)
+            ->groupBy("LEFT(excel.kode_akun_2, 2)");
+
         return $builder->get()->getResultArray();
     }
 

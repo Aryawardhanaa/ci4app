@@ -330,13 +330,10 @@ class RevenueController extends BaseController
         // Total semua data (tanpa filter)
         $totalRecords = $model->countAllData(); // Sesuaikan dengan cara menghitung total data
 
-        // Total data setelah filter (tanpa limit)
         $totalFiltered = $model->countFilteredData($regional, $avail, $revenue_cat);
 
-        // Ambil data dengan filter dan limit
         $data = $model->getDetailSite($regional, $avail, $revenue_cat, $length, $start);
 
-        // Format response untuk DataTables
         $result = [
             "draw"            => intval($draw),
             "recordsTotal"    => $totalFiltered,

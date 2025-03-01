@@ -42,9 +42,9 @@ class PegawaiSeeder extends Seeder
                 'udt' => date('Y-m-d H:i:s')
             ],
             [
-                'nama'  => 'Dimas',
-                'email'  => 'aryawardhana7831@gmail.com',
-                'role_id'  => 3,
+                'nama'  => 'Fajar',
+                'email'  => 'dimasafrizal099@gmail.com',
+                'role_id'  => 1,
                 'is_deleted' => 0,
                 'idt' => date('Y-m-d H:i:s'),
                 'udt' => date('Y-m-d H:i:s')

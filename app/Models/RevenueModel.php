@@ -106,7 +106,7 @@ class RevenueModel extends Model
         // $condregional = !empty($regional) ? 'AND regional =' . $regional : '';
 
         $sql = "SELECT COUNT(*) as total FROM revenue WHERE site_id 
-                IN (SELECT site_id FROM (
+                IN  (SELECT site_id FROM (
                         SELECT site_id, 
                             CASE 
                                 WHEN ((revenue_m1 <> 0) + (revenue_m2 <> 0) + (revenue_m3 <> 0) + 
@@ -277,15 +277,14 @@ class RevenueModel extends Model
         // exit;
         return $results;
     }
+
     public function getDetailSite($regional, $avail, $revenue_cat, $length, $start)
     {
-
         $revcat = str_replace("Bron ", "Bron+", $revenue_cat);
         $db = \Config\Database::connect();
         $cond = $this->paramCondition($revcat);
         $condAvail = $this->availCond($avail);
         // $condregional = $regional === "" ? '' : 'AND regional =' . $regional;
-
         $sql = "SELECT * FROM revenue WHERE site_id 
                 IN (SELECT site_id FROM (
                         SELECT site_id, 
@@ -303,7 +302,6 @@ class RevenueModel extends Model
                     ) AS revenue_avg
                 $cond
                 AND $condAvail AND regional ='$regional') LIMIT $length OFFSET $start ;";
-
         if ($regional === "") {
             $sql = "SELECT * FROM revenue WHERE site_id 
             IN (SELECT site_id FROM (
@@ -354,7 +352,6 @@ class RevenueModel extends Model
 
         return $results;
     }
-
     protected function minusDate($data, $type)
     {
         $date = new DateTime($data);
@@ -364,7 +361,6 @@ class RevenueModel extends Model
         // $converted = $this->converTanggal($date->format('Y-m-d')); 
         return $date->format('Y-m-d');
     }
-
     protected function paramCondition($param)
     {
         $cond = '';
@@ -401,7 +397,7 @@ class RevenueModel extends Model
                 $cond = 'WHERE avg_revenue > 399999999 ';
                 break;
             default:
-                $cond = '';
+                $cond = 'WHERE ';
                 break;
         }
         return $cond;
@@ -417,16 +413,16 @@ class RevenueModel extends Model
 
         switch ($param) {
             case 'total_P1':
-                $cond = 'average_availability < 0.899 ';
+                $cond = 'average_availability < 0.9 ';
                 break;
             case 'sales_P1':
-                $cond = 'average_availability BETWEEN 0.98 AND 1';
+                $cond = 'average_availability BETWEEN 0.979 AND 1.1';
                 break;
             case 'non_program_sales':
-                $cond = 'average_availability < 0.899 ';
+                $cond = 'average_availability < 0.9 ';
                 break;
             case 'total_P2':
-                $cond = 'average_availability BETWEEN 0.90 AND 0.98 ';
+                $cond = 'average_availability BETWEEN 0.8999 AND 0.981 ';
                 break;
             case 'total_Non_Program':
                 $cond = 'average_availability >= 0.98 ';

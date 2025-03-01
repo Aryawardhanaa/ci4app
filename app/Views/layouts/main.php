@@ -98,7 +98,19 @@
                                             <h2 class="ts-facts-num"><span class="counterUp">TASK 4</span></h2>
                                         </div>
                                     </a>
-                                </div><!-- Col end -->
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 ts-facts mt-5 mt-md-0">
+                                    <a href="/account">
+                                        <div class="ts-facts-img d-flex justify-content-center">
+                                            <img loading="lazy" src="<?= base_url('assets/images/icon-image/fact2.png') ?>" alt="facts-img">
+                                        </div>
+                                        <div class="ts-facts-content">
+                                            <h2 class="ts-facts-num"><span class="counterUp">TASK 6</span></h2>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- Col end -->
 
                             </div> <!-- Facts end -->
                         </div>

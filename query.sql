@@ -334,8 +334,19 @@ IN (SELECT site_id FROM (
     AND average_availability >= 98
     AND regional ='Sumbagut'
 );
-
-
+-------------------------------------------------------------------------------------------------------------------------------------
+SELECT LEFT(e.kode_akun_2, 2) AS kode_akun_2,
+SUM(CASE WHEN e.kategori_dokumen = '20' THEN e.total ELSE 0 END) AS 'Sumatera', 
+SUM(CASE WHEN e.kategori_dokumen = '21' THEN e.total ELSE 0 END) AS 'Sumbagut', 
+SUM(CASE WHEN e.kategori_dokumen = '22' THEN e.total ELSE 0 END) AS 'sumbagsel',
+SUM(CASE WHEN e.kategori_dokumen = '23 ' THEN e.total ELSE 0 END) AS 'sumbagteng',
+ca.desc
+FROM excel e 
+LEFT JOIN category_account_2 ca 
+ON ca.code_account = LEFT(e.kode_akun_2, 2) 
+AND LEFT(e.kode_akun_2, 2) 
+WHERE e.is_deleted = 0
+GROUP BY LEFT(e.kode_akun_2, 2);
 
 
 

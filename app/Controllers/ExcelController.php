@@ -54,7 +54,6 @@ class ExcelController extends BaseController
     }
     public function import()
     {
-
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
         $file = $this->request->getFile('file_excel');
@@ -67,12 +66,10 @@ class ExcelController extends BaseController
         if ($file->getClientExtension() != 'xlsx') {
             return redirect()->back()->with('failed', 'The file must be in XLSX format !');
         }
-        // if ($file && $file->isValid() && !$file->hasMoved()) {
         if ($file->getSize() > 1024 * 1024 * 20) {
             return redirect()->back()->with('failed', 'file Must Smaller Than 20 MB !');
         }
 
-        // }
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
         $spreadsheet =  $reader->load($file);
@@ -100,6 +97,7 @@ class ExcelController extends BaseController
             'is_deleted' => 0,
             'month_year'   => $monthyear . '-01'
         ]);
+
         $exist = $query->first();
         if (isset($exist)) {
             $updateBatchData = [];
@@ -115,9 +113,6 @@ class ExcelController extends BaseController
                 $model->updateBatch($updateBatchData, 'id');
             }
         }
-        // echo '<pre>';
-        // var_dump(isset($exist));
-        // exit;
         $result = [];
         foreach ($data as $key => $row) {
             $result[$key]['kode_dokumen'] = $row[0];
@@ -137,6 +132,7 @@ class ExcelController extends BaseController
             $result[$key]['idt'] = date('Y-m-d H:i:s');
             $result[$key]['udt'] = date('Y-m-d H:i:s');
         }
+
         $model->insertBatch($result);
 
         return redirect()->to('/excel')->with('message', 'Data added successfully!');

@@ -175,23 +175,23 @@
                             $non_program_sales += $value->non_program_sales; ?>
                             <tr>
                                 <td><?= $value->regional ?></td>
-                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P1") ?>"><?= $value->total_P1 ?></a></td>
-                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P2") ?>"><?= $value->total_P2 ?></a></td>
-                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_Non_Program") ?>"><?= $value->total_Non_Program ?></a></td>
-                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=sales_P1") ?>"><?= $value->sales_P1 ?></a></td>
-                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P2") ?>"><?= $value->total_P2 ?></a></td>
-                                <td><a href="<?= base_url("/detail-site?revenue_cat=$params&regional=$value->regional&avail=non_program_sales") ?>"><?= $value->non_program_sales ?></a></td>
+                                <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P1") ?>"><?= $value->total_P1 ?></a></td>
+                                <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P2") ?>"><?= $value->total_P2 ?></a></td>
+                                <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_Non_Program") ?>"><?= $value->total_Non_Program ?></a></td>
+                                <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&regional=$value->regional&avail=sales_P1") ?>"><?= $value->sales_P1 ?></a></td>
+                                <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&regional=$value->regional&avail=total_P2") ?>"><?= $value->total_P2 ?></a></td>
+                                <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&regional=$value->regional&avail=non_program_sales") ?>"><?= $value->non_program_sales ?></a></td>
 
                             </tr>
                         <?php endforeach; ?>
                         <tr>
                             <td>Total</td>
-                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_P1") ?>"> <?= $total_P1; ?></a></td>
-                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_P2") ?>"><?= $total_P2; ?></a></td>
-                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_Non_Program") ?>"><?= $total_Non_Program; ?></a></td>
-                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=sales_P1") ?>"><?= $sales_P1; ?></a></td>
-                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=total_P2") ?>"><?= $total_P2; ?></a></td>
-                            <td><a href="<?= base_url("/detail-site?revenue_cat=$params&avail=non_program_sales") ?>"><?= $non_program_sales; ?></a></td>
+                            <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&avail=total_P1") ?>"> <?= $total_P1; ?></a></td>
+                            <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&avail=total_P2") ?>"><?= $total_P2; ?></a></td>
+                            <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&avail=total_Non_Program") ?>"><?= $total_Non_Program; ?></a></td>
+                            <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&avail=sales_P1") ?>"><?= $sales_P1; ?></a></td>
+                            <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&avail=total_P2") ?>"><?= $total_P2; ?></a></td>
+                            <td><a href="<?= base_url("/revenue/detail-site?revenue_cat=$params&avail=non_program_sales") ?>"><?= $non_program_sales; ?></a></td>
                         </tr>
                     </tbody>
 
@@ -219,9 +219,9 @@
                             <div class="col-md-5 input-group mb-3">
 
                                 <div class="custom-file">
-                                    <input type="file" name="excel_file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
-                                    <!-- <input type="file" name="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"> -->
-                                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                    <input type="file" name="excel_file" class="custom-file-input" id="inputGroupFile02" aria-describedby="inputGroupFileAddon01">
+                                    <!-- <input type="file" name="file" class="custom-file-input" id="inputGroupFile02" aria-describedby="inputGroupFileAddon01"> -->
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
                                 </div>
                             </div>
                         </div>
@@ -312,6 +312,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url('assets/vendor/flatpickr/dist/flatpickr.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/flatpickr.js') ?>" defer></script>
+    <script src="<?= base_url('js/custom.js') ?>"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         $(function() {

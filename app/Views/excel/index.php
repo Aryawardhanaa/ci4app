@@ -43,12 +43,6 @@
             <li class="nav-item">
                 <a class="nav-link " id="custom-tabs-one-transaksi-tab" data-toggle="pill" href="#custom-tabs-one-transaksi" role="tab" aria-controls="custom-tabs-one-transaksi" aria-selected="true">List Other Document</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" id="custom-tabs-one-laporan-tab" data-toggle="pill" href="#custom-tabs-one-laporan" role="tab" aria-controls="custom-tabs-one-laporan" aria-selected="false">Tab 3</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="custom-tabs-one-users-tab" data-toggle="pill" href="#custom-tabs-one-users" role="tab" aria-controls="custom-tabs-one-users" aria-selected="false">Tab 4</a>
-            </li>
 
 
 
@@ -64,7 +58,7 @@
             <?php if (session()->getFlashdata('failed')): ?>
                 <div class="alert alert-danger"><?= session()->getFlashdata('failed') ?></div>
             <?php endif; ?>
-            <form action="/import-excel" method="post" enctype="multipart/form-data">
+            <form action="<?= base_url('/excel/import') ?>" method="post" enctype="multipart/form-data">
                 <?= csrf_field() ?>
 
                 <div class="form-group row mb-2">
@@ -87,8 +81,8 @@
                     <div class="col-md-5 input-group mb-3">
 
                         <div class="custom-file">
-                            <input type="file" name="file_excel" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
-                            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                            <input type="file" name="file_excel" class="custom-file-input" id="inputGroupFile02" aria-describedby="inputGroupFileAddon01">
+                            <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
                         </div>
                     </div>
                 </div>
@@ -279,6 +273,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url('assets/vendor/flatpickr/dist/flatpickr.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/flatpickr.js') ?>" defer></script>
+    <script src="<?= base_url('js/custom.js') ?>"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         $(function() {

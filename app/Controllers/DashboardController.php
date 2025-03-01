@@ -12,10 +12,6 @@ class DashboardController extends BaseController
     public function index(): string
     {
 
-        // echo '<pre>';
-        // var_dump($this->request->getMethod() == 'POST');
-        // exit;
-
         $reqmethod = $this->request->getMethod();
 
         $excelModel = new ExcelModel();
@@ -27,25 +23,28 @@ class DashboardController extends BaseController
             ->getResultArray();
 
 
-        // echo '<pre>';
-        // var_dump('dasdas');
-        // exit;
-        $param = $this->request->getPost('monthyear') ?? $datafilter[0]['month_year'];
+        $df = !$datafilter ?  date('Y-m') . '-01' : $datafilter[0]['month_year'];
+
+        $param = $this->request->getPost('monthyear') ?? $df;
         $isempty = count($datafilter);
         $datas = $excelModel->getAccountData($isempty, $param);
-        // echo '<pre>';
-        // var_dump($datas[0]['Des-23'] == 0);
-        // exit;
-        // ceil(($growthmom / $data[$aliasMom]) * 100) . '%';
-
-        // if ($reqmethod == 'POST') {
-        // }
 
         $startMom = $isempty != 0 ? $this->minusDate($param, 'month') : date('Y-m-d');
         $startYoy =  $isempty != 0 ? $this->minusDate($param, 'year') : date('Y-m-d');
 
         $endmonth = $param;
         return view('dashboard/index', compact('datas', 'endmonth', 'datafilter', 'startMom', 'startYoy', 'isempty'));
+    }
+    public function account(): string
+    {
+
+        $reqmethod = $this->request->getMethod();
+
+        $excelModel = new ExcelModel();
+
+        $datas = $excelModel->getAcountRegion();
+
+        return view('dashboard/account', compact('datas'));
     }
     public function exportExcel($id)
     {
